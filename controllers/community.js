@@ -124,6 +124,62 @@ const deleteCommunity = async (req, res) => {
         return res.status(400).json({ success: false, message: err.message });
     }
 }
+
+const followCommunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const  userId  = res.locals.decodedToken.id;
+
+        const community = await Community.findById(id);
+
+        if (!community) {
+            return res.status(400).json({ success: false, message: "Community not found" });
+        }
+
+        const existUser = community.followers.find(user => user == userId);
+
+        if (existUser) {
+            return res.status(400).json({ success: false, message: "User already follows the community" });
+        }
+
+        community.followers.push(userId);
+
+        await community.save();
+
+        return res.status(200).json({ success: true, data: community });
+    } catch (err) {
+        return res.status(400).json({ success: false, message: err.message });
+    }
+}
+
+const unfollowCommunity = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const  userId  = res.locals.decodedToken.id;
+
+        const community = await Community.findById(id);
+
+        if (!community) {
+            return res.status(400).json({ success: false, message: "Community not found" });
+        }
+
+        const existUser = community.followers.find(user => user == userId);
+
+        if (!existUser) {
+            return res.status(400).json({ success: false, message: "User doesn't follow the community" });
+        }
+
+        community.followers = community.followers.filter(user => user != userId);
+
+        await community.save();
+
+        return res.status(200).json({ success: true, data: community });
+    } catch (err) {
+        return res.status(400).json({ success: false, message: err.message });
+    }
+}
  
 module.exports = {
     createCommunity,
@@ -131,5 +187,7 @@ module.exports = {
     getCommunityById,
     getCommunityBySlug,
     updateCommunity,
-    deleteCommunity
+    deleteCommunity,
+    followCommunity,
+    unfollowCommunity
 }

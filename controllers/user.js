@@ -68,7 +68,7 @@ const loginUser = async (req, res) => {
 const validateUser = (req, res) => {
     try {
         const decodedToken = res.locals.decodedToken
-        const findUser = User.findOne({_id: decodedToken.id})
+        const findUser = User.findOne({_id: decodedToken._id})
 
         if(!findUser){
             return res.status(400).json({success: false, message: "Invalid token"})
@@ -118,5 +118,82 @@ const winCoins = async (req, res) => {
     }
 }
 
+const followUser = async (req, res) => {
+    try {
+        const id = res.locals.decodedToken._id;
 
-module.exports = { createUser, loginUser, validateUser, getUserByUsername, winCoins };
+        const { userId } = req.body;
+
+        const user = await User.findById(id);
+
+        if(!user){
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        const userToFollow = await User.findById(userId);
+
+        const existUser = userToFollow.followers.find(user => user == userId);
+
+        if (existUser) {
+            return res.status(400).json({ success: false, message: "User already follows the user" });
+        }
+
+
+        user.following.push(userId);
+
+        userToFollow.followers.push(id);
+
+        await user.save();
+        await userToFollow.save();
+
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        return res.status(400).json({ success: false, message: "User not found", error: error });
+    }
+}
+
+const unfollowUser = async (req, res) => {
+    try {
+        const id = res.locals.decodedToken._id;
+
+        const { userId } = req.body;
+
+        const user = await User.findById(id);
+
+        if(!user){
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        const userToUnfollow = await User.findById(userId);
+
+        const existUser = userToUnfollow.followers.find(user => user == userId);
+
+        if (!existUser) {
+            return res.status(400).json({ success: false, message: "User doesn't follow the user" });
+        }
+
+        user.following = user.following.filter(user => user != userId);
+
+        userToUnfollow.followers = userToUnfollow.followers.filter(user => user != id);
+
+        await user.save();
+        await userToUnfollow.save();
+
+        return res.status(200).json({ success: true, data: user });
+
+    } catch (error) {
+        return res.status(400).json({ success: false, message: "User not found", error: error });
+    }
+}
+
+
+
+module.exports = { 
+    winCoins ,
+    createUser, 
+    loginUser, 
+    followUser,
+    unfollowUser,
+    validateUser, 
+    getUserByUsername, 
+};
