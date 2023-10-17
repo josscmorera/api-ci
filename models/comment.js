@@ -6,11 +6,12 @@ const commentSchema = new mongoose.Schema({
     content: { type: String, required: true },
     user: { type: String, ref: 'User' },
     post: { type: String, ref: 'Post' },
-    createAt: { type: Date, default: Date.now },
     upvotes: [{ type: String, ref: 'User' }],
     downvotes: [{ type: String, ref: 'User' }],
     replies: [{ type: String, ref: 'Comment' }],
     reports: [{ type: String, ref: 'Report' }],
+    parent: { type: String, ref: 'Comment' },
+    createAt: { type: Date, default: Date.now },
 });
 
 const Comment = mongoose.model('Comment', commentSchema);

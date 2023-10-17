@@ -27,7 +27,7 @@ const createTag = async (req, res) => {
 
 const getAllTags = async (req, res) => {
     try {
-        const tags = await Tag.find();
+        const tags = await Tag.find().sort({ _id: -1 });
 
         return res.status(200).json({ success: true, data: tags });
     } catch (err) {

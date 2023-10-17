@@ -5,6 +5,7 @@ const communitySchema = new mongoose.Schema({
     _id : { type: String, default: uuidv4 },
     name: { type: String, required: true },
     slug: { type: String, required: true, unique: true },
+    createdBy: { type: String, ref: 'User' },
     followers: [{ type: String, ref: 'User' }],
     tags: [{ type: String, ref: 'Tag' }],
     createAt: { type: Date, default: Date.now },

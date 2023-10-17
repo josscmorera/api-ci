@@ -80,5 +80,43 @@ const validateUser = (req, res) => {
     }
 }
 
+const getUserByUsername = async (req, res) => {
+    try {
+        const { username } = req.params;
+        
+        const user =  await User.findOne({ username });
 
-module.exports = { createUser, loginUser, validateUser };
+        if(!user){
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        return res.status(400).json({ success: false, message: "User not found", error: error });
+    }
+}
+
+const winCoins = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const { coins } = req.body;
+
+        const user = await User.findById(id);
+
+        if(!user){
+            return res.status(400).json({ success: false, message: "User not found" });
+        }
+
+        user.coins += coins;
+
+        await user.save();
+
+        return res.status(200).json({ success: true, data: user });
+    } catch (error) {
+        return res.status(400).json({ success: false, message: "User not found", error: error });
+    }
+}
+
+
+module.exports = { createUser, loginUser, validateUser, getUserByUsername, winCoins };

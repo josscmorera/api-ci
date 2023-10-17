@@ -1,4 +1,6 @@
 const Report = require('../models/report');
+const Post = require('../models/post');
+const Comment = require('../models/comment');
 
 const createReport = async (req, res) => {
     try {
@@ -9,6 +11,22 @@ const createReport = async (req, res) => {
         const newReport = new Report({ content, type, typeId, user: id });
 
         const savedReport = await newReport.save();
+
+        if (type === 'post') {
+            const post = await Post.findById(typeId);
+
+            post.reports.push(savedReport._id);
+
+            await post.save();
+        }
+
+        if (type === 'comment') {
+            const comment = await Comment.findById(typeId);
+
+            comment.reports.push(savedReport._id);
+
+            await comment.save();
+        }
 
         return res.status(200).json({ success: true, data: savedReport });
     } catch (err) {

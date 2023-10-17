@@ -11,10 +11,7 @@ const userSchema = new mongoose.Schema({
     role: { type: String, enum: ['user', 'admin','blogger']},
     followers: [{ type: String, ref: 'User' }],
     following: [{ type: String, ref: 'User' }],
-    upvotes: [{ type: String, ref: 'Post' }],
-    downvotes: [{ type: String, ref: 'Post' }],
     coins: { type: Number, default: 0 },
-
     createAt: { type: Date, default: Date.now },
 });
 
