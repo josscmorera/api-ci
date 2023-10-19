@@ -18,7 +18,7 @@ const createPost = async (req, res) => {
             return res.status(400).json({ success: false, message: "Post already exists" });
         }
 
-        const author = res.locals.decodedToken.id;
+        const author = req.decodedToken.id;
 
         const newPost = new Post({ title, content, tag, community, slug, author, image: `/uploads/${imagePath}` });
 
@@ -139,7 +139,7 @@ const upvotePost = async (req, res) => {
           return res.status(400).json({ success: false, message: "Post not found" });
       }
 
-      const user = res.locals.decodedToken._id;
+      const user = req.decodedToken._id;
 
       if (post.upvotes.includes(user)) {
           post.upvotes = post.upvotes.filter(userId => userId !== user);
@@ -166,7 +166,7 @@ const downvotePost = async (req, res) => {
           return res.status(400).json({ success: false, message: "Post not found" });
       }
 
-      const user = res.locals.decodedToken._id;
+      const user = req.decodedToken._id;
 
       if (post.downvotes.includes(user)) {
           post.downvotes = post.downvotes.filter(userId => userId !== user);

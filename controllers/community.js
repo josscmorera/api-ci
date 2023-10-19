@@ -129,7 +129,7 @@ const followCommunity = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const  userId  = res.locals.decodedToken.id;
+        const  userId  = req.decodedToken.id;
 
         const community = await Community.findById(id);
 
@@ -157,7 +157,7 @@ const unfollowCommunity = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const  userId  = res.locals.decodedToken.id;
+        const  userId  = req.decodedToken.id;
 
         const community = await Community.findById(id);
 

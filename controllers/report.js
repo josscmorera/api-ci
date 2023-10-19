@@ -6,7 +6,7 @@ const createReport = async (req, res) => {
     try {
         const { content, type, typeId } = req.body;
         
-        const id = res.locals.decodedToken.id;
+        const id = req.decodedToken.id;
 
         const newReport = new Report({ content, type, typeId, user: id });
 

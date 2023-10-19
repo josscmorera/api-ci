@@ -31,12 +31,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/tags', tagsRouter);
-app.use('/reports', reportsRouter);
-app.use('/posts', postsRouter);
-app.use('/comments', commentsRouter);
-app.use('/communities', communityRouter);
+app.use('/api/users/', usersRouter);
+app.use('/api/tags/', tagsRouter);
+app.use('/api/reports/', reportsRouter);
+app.use('/api/posts/', postsRouter);
+app.use('/api/comments/', commentsRouter);
+app.use('/api/communities/', communityRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -46,8 +46,8 @@ app.use(function(req, res, next) {
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  req.message = err.message;
+  req.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
   res.status(err.status || 500);

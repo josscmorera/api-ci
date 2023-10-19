@@ -12,7 +12,7 @@ const createComment = async (req, res) => {
             return res.status(400).json({ success: false, message: "Parent comment not found" });
         }
         
-        const user = res.locals.decodedToken._id;
+        const user = req.decodedToken._id;
 
         const newComment = new Comment({ content, post, user, parent });
 
@@ -135,7 +135,7 @@ const upvoteComment = async (req, res) => {
             return res.status(400).json({ success: false, message: "Comment not found" });
         }
 
-        const user = res.locals.decodedToken._id;
+        const user = req.decodedToken._id;
 
         if (comment.upvotes.includes(user)) {
             comment.upvotes = comment.upvotes.filter(userId => userId !== user);
@@ -162,7 +162,7 @@ const downvoteComment = async (req, res) => {
             return res.status(400).json({ success: false, message: "Comment not found" });
         }
 
-        const user = res.locals.decodedToken._id;
+        const user = req.decodedToken._id;
 
         if (comment.downvotes.includes(user)) {
             comment.downvotes = comment.downvotes.filter(userId => userId !== user);

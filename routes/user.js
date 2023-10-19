@@ -14,9 +14,9 @@ const {
 
 var router = express.Router();
 
-router.post('/new', validateUserData, createUser);
+router.post('/register', validateUserData, createUser);
 router.post('/login',  loginUser);
-router.get('/validate', jwtValidate, validateUser);
+router.get('/authtoken', jwtValidate, validateUser);
 router.get('/username/:username', getUserByUsername);
 router.put('/:id/win-coins', jwtValidate, winCoins);
 router.put('/follow', jwtValidate, followUser);

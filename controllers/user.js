@@ -27,7 +27,7 @@ const createUser = async (req, res) => {
         const newUser =  new User(userInfo);
         const savedUser = await newUser.save();
 
-        const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ id: savedUser._id }, process.env.SECRET_KEY, { expiresIn: '1y' });
 
         return res.status(200).json({ success: true, data: savedUser, token });
     }
@@ -42,7 +42,6 @@ const loginUser = async (req, res) => {
 
         const foundUser = await User.findOne({ email });
 
-        console.log(foundUser)
 
         if (!foundUser) {
             return res.status(400).json({ success: false, message: "Invalid email or password" });
@@ -50,14 +49,13 @@ const loginUser = async (req, res) => {
 
         const isPasswordValid = await bcrypt.compare(password, foundUser.password);
 
-        console.log(isPasswordValid)
 
         if (!isPasswordValid) {
             return res.status(400).json({ success: false, message: "Invalid email or password" });
         }
 
         // Generate a token and send it back to the user
-        const token = jwt.sign({ id: foundUser._id }, process.env.SECRET_KEY, { expiresIn: '1h' });
+        const token = jwt.sign({ id: foundUser._id }, process.env.SECRET_KEY, { expiresIn: '1y' });
 
         return res.status(200).json({ success: true, data: foundUser, token: token });
     } catch (err) {
@@ -65,16 +63,17 @@ const loginUser = async (req, res) => {
     }
 }
 
-const validateUser = (req, res) => {
+const validateUser = async (req, res) => {
     try {
-        const decodedToken = res.locals.decodedToken
-        const findUser = User.findOne({_id: decodedToken._id})
+        const decodedToken = req.decodedToken
+        const findUser = await User.findOne({_id: decodedToken.id})
+
 
         if(!findUser){
             return res.status(400).json({success: false, message: "Invalid token"})
         }
         
-        return res.status(200).json({success: true, user: findUser})
+        return res.status(200).json({success: true, data: findUser, token: req.token})
     } catch (error) {
         return res.status(400).json({ success: false, message: "Invalid token", error: error });
     }
@@ -120,7 +119,7 @@ const winCoins = async (req, res) => {
 
 const followUser = async (req, res) => {
     try {
-        const id = res.locals.decodedToken._id;
+        const id = req.decodedToken._id;
 
         const { userId } = req.body;
 
@@ -154,7 +153,7 @@ const followUser = async (req, res) => {
 
 const unfollowUser = async (req, res) => {
     try {
-        const id = res.locals.decodedToken._id;
+        const id = req.decodedToken._id;
 
         const { userId } = req.body;
 
