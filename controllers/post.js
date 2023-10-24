@@ -131,8 +131,8 @@ const getPostBySlug = async (req, res) => {
 const updatePost = async (req, res) => {
   try {
     const { id } = req.params;
-
     const { title, content, tag, community } = req.body;
+    const imagePath = req.file ? req.file.path : undefined;
 
     const slug = slugify(title, { lower: true });
 
@@ -146,7 +146,7 @@ const updatePost = async (req, res) => {
 
     const updatedPost = await Post.findByIdAndUpdate(
       id,
-      { title, content, tag, community, slug },
+      { title, content, tag, community, slug, image: imagePath },
       { new: true }
     );
 
@@ -250,4 +250,5 @@ module.exports = {
   deletePost,
   upvotePost,
   downvotePost,
+  getPost,
 };

@@ -289,6 +289,19 @@ const unfollowUser = async (req, res) => {
   }
 };
 
+const getUsers = async (req, res) => {
+  try {
+    console.log("called");
+    const users = await User.find();
+    console.log("users", users.length);
+    return res.status(200).json({ success: true, data: users });
+  } catch (error) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Users not found", error: error });
+  }
+};
+
 module.exports = {
   winCoins,
   createUser,
@@ -298,4 +311,5 @@ module.exports = {
   validateUser,
   updateUser,
   getUserByUsername,
+  getUsers,
 };

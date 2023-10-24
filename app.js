@@ -5,7 +5,6 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 require("dotenv").config();
 const { moongoseConect } = require("./db");
-moongoseConect();
 const cors = require("cors");
 const debug = require("debug")("app:app");
 
@@ -16,8 +15,11 @@ const indexRouter = require("./routes/index");
 const reportsRouter = require("./routes/report");
 const commentsRouter = require("./routes/comment");
 const communityRouter = require("./routes/community");
+const { createAdminUser } = require("./helpers/user");
 
 const app = express();
+moongoseConect();
+createAdminUser();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));

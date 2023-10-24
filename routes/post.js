@@ -20,7 +20,7 @@ router.post("/new", jwtValidate, upload.single("file"), createPost);
 router.get("/", getPosts);
 router.get("/:id", getPostById);
 router.get("/slug/:slug", getPostBySlug);
-router.put("/:id", jwtValidate, updatePost);
+router.put("/:id", jwtValidate, upload.single("file"), updatePost);
 router.delete("/:id", jwtValidate, deletePost);
 router.put("/:id/upvote", jwtValidate, upvotePost);
 router.put("/:id/downvote", jwtValidate, downvotePost);

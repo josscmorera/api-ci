@@ -1,6 +1,7 @@
 const Report = require("../models/report");
 const Post = require("../models/post");
 const Comment = require("../models/comment");
+const { getPost } = require("./post");
 
 const createReport = async (req, res) => {
   try {
@@ -36,11 +37,31 @@ const createReport = async (req, res) => {
 
 const getAllReports = async (req, res) => {
   try {
-    const { type, typeId } = req.query;
+    //const { type, typeId } = req.query;
 
-    const reports = await Report.find({ type, typeId }).populate("user");
+    const reports = await Report.find().populate("user");
 
-    return res.status(200).json({ success: true, data: reports });
+    const pupulateReports = await Promise.all(
+      reports.map(async (report) => {
+        const newReport = report.toObject();
+
+        if (newReport.type == "post") {
+          const post = await getPost(newReport.typeId);
+          newReport.post = post;
+        }
+
+        if (newReport.type == "comment") {
+          const comment = await Comment.findById(newReport.typeId)
+            .populate("user")
+            .populate("post");
+          newReport.comment = comment;
+        }
+        console.log(newReport);
+        return newReport;
+      })
+    );
+
+    return res.status(200).json({ success: true, data: pupulateReports });
   } catch (err) {
     return res.status(400).json({ success: false, message: err.message });
   }

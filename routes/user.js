@@ -11,6 +11,7 @@ const {
   followUser,
   unfollowUser,
   updateUser,
+  getUsers,
 } = require("../controllers/user");
 
 var router = express.Router();
@@ -23,5 +24,6 @@ router.put("/:id", jwtValidate, updateUser);
 router.put("/:id/donate", jwtValidate, winCoins);
 router.put("/:userId/follow", jwtValidate, followUser);
 router.put("/:userId/unfollow", jwtValidate, unfollowUser);
+router.get("/", jwtValidate, getUsers);
 
 module.exports = router;
